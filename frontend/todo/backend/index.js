@@ -6,12 +6,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const PORT = 3000;
 app.use(bodyParser.json());
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-  })
-);
-app.get("/todo", async (req, res) => {
+app.use(cors());
+app.post("/todo", async (req, res) => {
   const createPayload = req.body;
   const parsedPayload = createTodo.safeParse(createPayload);
   if (!parsedPayload.success) {
@@ -26,7 +22,7 @@ app.get("/todo", async (req, res) => {
   });
   res.json({ msg: "Todo created successfully" });
 });
-app.post("/todos", async (req, res) => {
+app.get("/todos", async (req, res) => {
   const response = await todo.find({});
   res.json({
     response,
