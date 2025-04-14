@@ -1,15 +1,43 @@
-import { lazy } from "react";
+import { lazy, Suspense, useContext, useState } from "react";
 import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import Contact from "./components/Contact";
+import { Context } from "./components/Context";
 const Dashboard = lazy(() => import("./components/Dashboard"));
 const Landing = lazy(() => import("./components/Landing")); //lazy loading
 function App() {
+  const [Prop, setProp] = useState(0);
   return (
     <>
       <BrowserRouter>
-        <TopBar />
+        <Context.Provider value={Prop}>
+          //context api
+          <TopBar />
+        </Context.Provider>
         <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/" element={<Landing />} />
+          <Route
+            path="/dashboard"
+            element={
+              <Suspense fallback={"loading ..."}>
+                <Dashboard />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={"Loading ..."}>
+                <Landing />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <Suspense fallback={"Loading ..."}>
+                <Contact />
+              </Suspense>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>
@@ -18,6 +46,7 @@ function App() {
 
 function TopBar() {
   const navigate = useNavigate();
+  const value = useContext(Context);
 
   return (
     <header className="bg-black text-white px-6 py-4 shadow-md">
@@ -35,6 +64,12 @@ function TopBar() {
             className="bg-white text-black px-4 py-2 rounded-md font-semibold hover:bg-gray-200 transition"
           >
             Dashboard
+          </button>
+          <button
+            onClick={() => navigate("/contact")}
+            className="bg-white text-black px-4 py-2 rounded-md font-semibold hover:bg-gray-200 transition"
+          >
+            Contact
           </button>
         </nav>
       </div>
