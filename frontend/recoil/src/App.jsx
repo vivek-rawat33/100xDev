@@ -1,19 +1,34 @@
-import {
-  RecoilRoot,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { countAtom, evenSelector } from "./store/atoms/Count";
-
+import {
+  JobsAtom,
+  MessagingAtom,
+  NotificationAtom,
+  TotalNotificationSelector,
+} from "./store/atoms/store";
+import React from "react";
 function App() {
+  const NotificationsCount = useRecoilValue(NotificationAtom);
+  const MessagingCount = useRecoilValue(MessagingAtom);
+  const JobsCount = useRecoilValue(JobsAtom);
+
+  const totalNotificationCount = useRecoilValue(TotalNotificationSelector);
   return (
-    <RecoilRoot>
+    <div>
       <div>
         <Count />
         <IsEven />
       </div>
-    </RecoilRoot>
+
+      <button>Home</button>
+      <button>
+        Notifications ({NotificationsCount >= 100 ? "99 +" : NotificationsCount}
+        )
+      </button>
+      <button>Jobs ({JobsCount})</button>
+      <button>Messaging ({MessagingCount})</button>
+      <button>Me ({totalNotificationCount})</button>
+    </div>
   );
 }
 
