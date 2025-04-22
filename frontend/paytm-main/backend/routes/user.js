@@ -1,14 +1,16 @@
 const express = require("express");
 const users = require("../db");
 const zod = require("zod");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
+const JWT_SECRET = require("../config");
 router.use(express.json());
 
 function userValidator({ firstName, lastName, password, userName }) {
   const userSchema = zod.object({
     firstName: zod.string(),
     lastName: zod.string(),
-    userName: zod.string(),
+    userName: zod.string().email(),
     password: zod.coerce.string(),
   });
   const response = userSchema.safeParse({
@@ -41,9 +43,15 @@ router.post("/signup", async (req, res) => {
     userName: req.body.userName,
   });
   await user.save();
-
+  const token = jwt.sign(
+    {
+      userid: user._id,
+    },
+    JWT_SECRET
+  );
   res.json({
     msg: "user created",
+    token: token,
   });
 });
 
@@ -61,8 +69,16 @@ router.post("/signin", async (req, res) => {
       msg: "User not found",
     });
   }
+  const token = jwt.sign(
+    {
+      userId: userExists._id,
+    },
+    JWT_SECRET
+  );
+
   res.json({
     msg: "signin",
+    token: token,
   });
 });
 module.exports = router;
