@@ -1,12 +1,10 @@
 const express = require("express");
-const users = require("../db");
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 const JWT_SECRET = require("../config");
 const { authMiddleware } = require("../middleware");
-const User = require("../db");
-const Account = require("../db");
+const { User, Account } = require("../db");
 router.use(express.json());
 
 function userValidator({ firstName, lastName, password, userName }) {
@@ -33,7 +31,7 @@ router.post("/signup", async (req, res) => {
       msg: "wrong credentials",
     });
   }
-  const userExists = await User.findOne({ userName });
+  const userExists = await User.findOne({ userName: userName });
   if (userExists) {
     return res.status(409).json({
       msg: "User already exists",
@@ -83,7 +81,6 @@ router.post("/signin", async (req, res) => {
     },
     JWT_SECRET
   );
-
   res.json({
     msg: "signin",
     token: token,

@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     type: String,
     minLength: 4,
-    maxLength: 15,
+    maxLength: 30,
     unique: true,
     upperCase: true,
     lowerCase: true,
@@ -36,7 +36,7 @@ const accountSchema = new mongoose.Schema({
   },
   balance: {
     type: Number,
-    require: true,
+    required: true,
   },
 });
 const User = mongoose.model("User", userSchema);
