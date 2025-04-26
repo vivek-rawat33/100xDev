@@ -4,6 +4,9 @@ const zod = require("zod");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 const JWT_SECRET = require("../config");
+const { authMiddleware } = require("../middleware");
+const User = require("../db");
+const Account = require("../db");
 router.use(express.json());
 
 function userValidator({ firstName, lastName, password, userName }) {
@@ -30,22 +33,27 @@ router.post("/signup", async (req, res) => {
       msg: "wrong credentials",
     });
   }
-  const userExists = await users.findOne({ userName });
+  const userExists = await User.findOne({ userName });
   if (userExists) {
     return res.status(409).json({
       msg: "User already exists",
     });
   }
-  const user = new users({
+  const user = await User.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     password: req.body.password,
     userName: req.body.userName,
   });
-  await user.save();
+  const userId = user._id;
+
+  await Account.create({
+    userId,
+    balance: 1 + Math.random() * 1000,
+  });
   const token = jwt.sign(
     {
-      userid: user._id,
+      userId: user._id,
     },
     JWT_SECRET
   );
@@ -63,7 +71,7 @@ router.post("/signin", async (req, res) => {
     });
   }
   const { password, userName } = req.body;
-  const userExists = await users.findOne({ userName, password });
+  const userExists = await User.findOne({ userName, password });
   if (!userExists) {
     return res.status(404).json({
       msg: "User not found",
@@ -81,4 +89,54 @@ router.post("/signin", async (req, res) => {
     token: token,
   });
 });
+
+const updateBody = zod.object({
+  password: zod.string().optional(),
+  firstName: zod.string().optional(),
+  lastName: zod.string().optional(),
+});
+router.put("/", authMiddleware, async (req, res) => {
+  const { success } = updateBody.safeParse(req.body);
+  if (!success) {
+    res.status(411).json({
+      msg: "Error while updating information",
+    });
+  }
+  await users.updateOne(req.body, {
+    id: req.userId,
+  });
+
+  res.json({
+    msg: "updated successfully",
+  });
+});
+
+router.get("/bulk", async (req, res) => {
+  const filter = req.query.filter || "";
+
+  const users = await User.find({
+    $or: [
+      {
+        firstName: {
+          $regex: filter,
+        },
+      },
+      {
+        lastName: {
+          $regex: filter,
+        },
+      },
+    ],
+  });
+
+  res.json({
+    user: users.map((user) => ({
+      username: user.userName,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      _id: user._id,
+    })),
+  });
+});
+
 module.exports = router;
