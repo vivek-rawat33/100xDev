@@ -8,6 +8,10 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
+          <Route
+            path="/"
+            element={localStorage.getItem("token") ? <DashBoard /> : <SignUp />}
+          />
           <Route path="/signup" element={<SignUp />}></Route>
           <Route path="/signin" element={<SignIn />}></Route>
           <Route path="/dashboard" element={<DashBoard />}></Route>
