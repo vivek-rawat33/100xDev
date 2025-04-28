@@ -23,6 +23,18 @@ function userValidator({ firstName, lastName, password, userName }) {
   return response;
 }
 
+function signinValidator({ userName, password }) {
+  const signinSchema = zod.object({
+    userName: zod.string(),
+    password: zod.coerce.string(),
+  });
+  const response = signinSchema.safeParse({
+    userName,
+    password,
+  });
+  return response;
+}
+
 router.post("/signup", async (req, res) => {
   const { userName } = req.body;
   const response = userValidator(req.body);
@@ -62,7 +74,8 @@ router.post("/signup", async (req, res) => {
 });
 
 router.post("/signin", async (req, res) => {
-  const response = userValidator(req.body);
+  const response = signinValidator(req.body);
+
   if (!response.success) {
     return res.status(400).json({
       msg: "wrong credentials",
@@ -88,20 +101,23 @@ router.post("/signin", async (req, res) => {
 });
 
 const updateBody = zod.object({
-  password: zod.string().optional(),
+  password: zod.coerce.string().optional(),
   firstName: zod.string().optional(),
   lastName: zod.string().optional(),
 });
 router.put("/", authMiddleware, async (req, res) => {
   const { success } = updateBody.safeParse(req.body);
   if (!success) {
-    res.status(411).json({
+    return res.status(411).json({
       msg: "Error while updating information",
     });
   }
-  await users.updateOne(req.body, {
-    id: req.userId,
-  });
+  await User.updateOne(
+    {
+      _id: req.userId,
+    },
+    req.body
+  );
 
   res.json({
     msg: "updated successfully",
