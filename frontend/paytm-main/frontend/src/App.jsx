@@ -3,13 +3,15 @@ import SignUp from "./Pages/SignUp";
 import SignIn from "./Pages/SignIn";
 import DashBoard from "./Pages/DashBoard";
 import SendMoney from "./Pages/SendMoney";
+import UpdateBody from "./Pages/UpdateBody";
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<UpdateBody />} />
           <Route
-            path="/"
+            path="/me"
             element={localStorage.getItem("token") ? <DashBoard /> : <SignUp />}
           />
           <Route path="/signup" element={<SignUp />}></Route>

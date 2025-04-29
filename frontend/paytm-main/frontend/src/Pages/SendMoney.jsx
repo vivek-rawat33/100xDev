@@ -40,6 +40,7 @@ export const SendMoney = () => {
                   placeholder="Enter amount"
                 />
               </div>
+              <div className="text-red-600 ">please enter valid detail</div>
               <button
                 onClick={() => {
                   axios.post(

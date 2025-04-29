@@ -94,7 +94,7 @@ interface Triangle {
   side3: number;
 }
 
-//using type for function argument (types let you do intersections and unions interface dont let you do that)
+//using type for function argument (types let you do intersections and unions. interface dont let you do that)
 type Shape = Rectangle | Square | Circle | Triangle;
 
 function renderShape(shape: Shape) {
