@@ -116,3 +116,18 @@ function calculate(a: number, b: number, type: Arithematics) {
 }
 let x = calculate(1, 2, Arithematics.Div);
 console.log(x);
+
+//generic
+function firstElem(arr: (string | number)[]) {
+  return arr[0];
+}
+const value = firstElem(["vivek", "rawat"]);
+// console.log(value.toUpperCase()); //error
+
+function identity<T>(arg: T[]) {
+  return arg[0];
+}
+let output1 = identity<string>(["MyString", "vivek", "singh"]);
+let output2 = identity<number>([1, 4, 6, 7, 2]);
+console.log(output1.toUpperCase(), output2);
+ 

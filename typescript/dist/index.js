@@ -49,3 +49,13 @@ function calculate(a, b, type) {
 }
 let x = calculate(1, 2, Arithematics.Div);
 console.log(x);
+function firstElem(arr) {
+    return arr[0];
+}
+const value = firstElem(["vivek", "rawat"]);
+function identity(arg) {
+    return arg[0];
+}
+let output1 = identity(["MyString", "vivek", "singh"]);
+let output2 = identity([1, 4, 6, 7, 2]);
+console.log(output1.toUpperCase(), output2);

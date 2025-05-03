@@ -9,13 +9,13 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<UpdateBody />} />
+          <Route path="/update" element={<UpdateBody />} />
           <Route
             path="/me"
             element={localStorage.getItem("token") ? <DashBoard /> : <SignUp />}
           />
           <Route path="/signup" element={<SignUp />}></Route>
-          <Route path="/signin" element={<SignIn />}></Route>
+          <Route path="/" element={<SignIn />}></Route>
           <Route path="/dashboard" element={<DashBoard />}></Route>
           <Route path="/transfer" element={<SendMoney />}></Route>
         </Routes>
