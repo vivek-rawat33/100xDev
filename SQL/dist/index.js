@@ -101,7 +101,7 @@ function UserData() {
        )`);
     });
 }
-UserData();
+// UserData();
 function insertDataInUser() {
     return __awaiter(this, void 0, void 0, function* () {
         const userData = `INSERT INTO USERS (username , email, password ) VALUES ( $1 , $2 ,$3 ) RETURNING ID `;
@@ -114,4 +114,14 @@ function insertDataInUser() {
         yield client.end();
     });
 }
-insertDataInUser();
+// insertDataInUser();
+function fetchData() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield client.connect();
+        const query = `SELECT u.id ,u.username , u.email ,u.password , a.address, a.city FROM users u JOIN address a ON  u.id = a.id`;
+        const result = yield client.query(query);
+        console.log(result.rows);
+        yield client.end();
+    });
+}
+fetchData();

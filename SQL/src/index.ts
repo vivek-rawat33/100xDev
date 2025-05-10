@@ -112,9 +112,14 @@ async function insertDataInUser() {
   await client.query(addressData, addressValues);
   await client.end();
 }
-insertDataInUser();
+// insertDataInUser();
 
+//using join
 async function fetchData() {
   await client.connect();
-  
+  const query = `SELECT u.id ,u.username , u.email ,u.password , a.address, a.city FROM users u JOIN address a ON  u.id = a.id`;
+  const result = await client.query(query);
+  console.log(result.rows);
+  await client.end();
 }
+fetchData();
